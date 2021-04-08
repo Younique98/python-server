@@ -1,24 +1,45 @@
 ANIMALS = [
     {
-        "id": 1,
-        "name": "Snickers",
-        "species": "Dog",
-        "locationId": 1,
-        "customerId": 4
+      "id": 2,
+      "name": "AoodlesisAPoodle",
+      "breed": "Poodle",
+      "locationId": 2,
+      "customerId": 2
     },
     {
-        "id": 2,
-        "name": "Gypsy",
-        "species": "Dog",
-        "locationId": 1,
-        "customerId": 2
+      "id": 4,
+      "name": "Toodles",
+      "breed": "Poodle",
+      "customerId": 4,
+      "locationId": 2
     },
     {
-        "id": 3,
-        "name": "Blue",
-        "species": "Cat",
-        "locationId": 2,
-        "customerId": 1
+      "id": 5,
+      "name": "Roodles",
+      "breed": "Poodle",
+      "customerId": 5,
+      "locationId": 2
+    },
+    {
+      "id": 6,
+      "name": "aoodles",
+      "breed": "Poodle",
+      "customerId": 5,
+      "locationId": 2
+    },
+    {
+      "name": "Fluffy",
+      "breed": "Lion rabbit",
+      "locationId": 2,
+      "customerId": 1,
+      "id": 7
+    },
+    {
+      "name": "Elephant",
+      "breed": "Larger Cute Elephant",
+      "locationId": 1,
+      "customerId": 3,
+      "id": 8
     }
 ]
 def get_all_animals():
