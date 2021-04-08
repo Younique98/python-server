@@ -1,7 +1,10 @@
+from employees.request import EMPLOYEES, get_all_employees, get_single_employee
 from animals.request import ANIMALS
+from locations.request import LOCATIONS
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from animals import get_all_animals, get_single_animal
-
+from locations import get_all_locations, get_single_location
+from employees import get_all_employees, get_single_employee
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -43,6 +46,32 @@ class HandleRequests(BaseHTTPRequestHandler):
                 requested_animal = animal
 
         return requested_animal
+    def get_single_location(id):
+    # Variable to hold the found animal, if it exists
+        requested_location = None
+
+    # Iterate the LOCATIONS list above. Very similar to the
+    # for..of loops you used in JavaScript.
+        for location in LOCATIONS:
+        # Dictionaries in Python use [] notation to find a key
+        # instead of the dot notation that JavaScript used.
+            if location["id"] == id:
+                requested_location = location
+
+        return requested_location
+    def get_single_employee(id):
+    # Variable to hold the found animal, if it exists
+        requested_employee = None
+
+    # Iterate the LOCATIONS list above. Very similar to the
+    # for..of loops you used in JavaScript.
+        for employee in EMPLOYEES:
+        # Dictionaries in Python use [] notation to find a key
+        # instead of the dot notation that JavaScript used.
+            if employee["id"] == id:
+                requested_employee = employee
+
+        return requested_employee
 
     def _set_headers(self, status):
         self.send_response(status)
@@ -73,6 +102,37 @@ class HandleRequests(BaseHTTPRequestHandler):
 
             else:
                 response = f"{get_all_animals()}"
+
+        self.wfile.write(response.encode())
+
+    def do_GET(self):
+        self._set_headers(200)
+        response = {}  # Default response
+
+        # Parse the URL and capture the tuple that is returned
+        (resource, id) = self.parse_url(self.path)
+
+        if resource == "locations":
+            if id is not None:
+                response = f"{get_single_location(id)}"
+
+            else:
+                response = f"{get_all_locations()}"
+
+        self.wfile.write(response.encode())
+    def do_GET(self):
+        self._set_headers(200)
+        response = {}  # Default response
+
+        # Parse the URL and capture the tuple that is returned
+        (resource, id) = self.parse_url(self.path)
+
+        if resource == "employee":
+            if id is not None:
+                response = f"{get_single_employee(id)}"
+
+            else:
+                response = f"{get_all_employees()}"
 
         self.wfile.write(response.encode())
 
