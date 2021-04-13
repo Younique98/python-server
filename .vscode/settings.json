@@ -1,3 +1,12 @@
 {
-    "python.pythonPath": "/Users/ericathompson/.local/share/virtualenvs/python-server-Xam5tXiJ/bin/python"
+    "python.pythonPath": "/Users/ericathompson/.local/share/virtualenvs/python-server-Xam5tXiJ/bin/python",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "Python Kennels",
+            "database": "kennel.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
 }
