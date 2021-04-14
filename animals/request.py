@@ -2,82 +2,7 @@ import sqlite3
 import json
 from models import Animal
 
-ANIMALS = [
-    {
-      "id": 1,
-      "name": "AoodlesisAPoodle",
-      "breed": "Poodle",
-      "locationId": 2,
-      "customerId": 2,
-      "status": "Admitted"
-    },
-    {
-      "id": 2,
-      "name": "AoodlesisAPoodle",
-      "breed": "Poodle",
-      "locationId": 2,
-      "customerId": 2,
-      "status": "Admitted"
-    },
-    {
-      "id": 4,
-      "name": "Toodles",
-      "breed": "Poodle",
-      "customerId": 4,
-      "locationId": 2,
-      "status": "Admitted"
-    },
-    {
-      "id": 5,
-      "name": "Roodles",
-      "breed": "Poodle",
-      "customerId": 5,
-      "locationId": 2,
-      "status": "Admitted"
-    },
-    {
-      "id": 6,
-      "name": "aoodles",
-      "breed": "Poodle",
-      "customerId": 5,
-      "locationId": 2,
-      "status": "Admitted"
-    },
-    {
-      "name": "Fluffy",
-      "breed": "Lion rabbit",
-      "locationId": 2,
-      "customerId": 1,
-      "id": 7,
-      "status": "Admitted"
-    },
-    {
-      "name": "Elephant",
-      "breed": "Larger Cute Elephant",
-      "locationId": 1,
-      "customerId": 3,
-      "id": 8,
-      "status": "Admitted"
-    }
-]
-
-def get_all_animals():
-    return ANIMALS
-
 # Function with a single parameter
-def get_single_animal(id):
-    # Variable to hold the found animal, if it exists
-    requested_animal = None
-
-    # Iterate the ANIMALS list above. Very similar to the
-    # for..of loops you used in JavaScript.
-    for animal in ANIMALS:
-        # Dictionaries in Python use [] notation to find a key
-        # instead of the dot notation that JavaScript used.
-        if animal["id"] == id:
-            requested_animal = animal
-
-    return requested_animal
 
 def create_animal(animal):
     # Get the id value of the last animal in the list
@@ -189,3 +114,31 @@ def get_single_animal(id):
                             data['customer_id'])
 
         return json.dumps(animal.__dict__)
+
+def get_animals_by_status(status):
+
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        select
+            a.id,
+            a.name,
+            a.status,
+            a.breed,
+            a.customer_id,
+            a.location_id
+        from Animal a
+        WHERE a.status = ?
+        """, ( status, ))
+
+        animals = []
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+            animal = Animal(row['id'], row['name'], row['status'], row['breed'], row['customer_id'], row['location_id'])
+            animals.append(animal.__dict__)
+
+    return json.dumps(animals)

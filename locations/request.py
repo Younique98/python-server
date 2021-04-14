@@ -2,24 +2,6 @@ import sqlite3
 import json
 from models import Location
 
-LOCATIONS = [
-    {
-      "id": 1,
-      "name": "Nashville North",
-      "address": "8422 Johnson Pike"
-    },
-    {
-      "id": 2,
-      "name": "Nashville South",
-      "address": "209 Emory Drive"
-    },
-    {
-      "id": 3,
-      "name": "Nashville Third Place",
-      "address": "209 Emory Drive"
-    }
-]
-
 def create_location(location):
     # Get the id value of the last location in the list
     max_id = LOCATIONS[-1]["id"]
@@ -120,3 +102,4 @@ def get_single_location(id):
         location = Location(data['id'], data['name'], data['address'])
 
         return json.dumps(location.__dict__)
+

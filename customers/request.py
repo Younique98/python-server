@@ -2,56 +2,7 @@ import sqlite3
 import json
 from models import Customer
 
-CUSTOMERS = [
-    {
-      "id": 1,
-      "name": "Fannah Hall",
-      "address": "5002 Thestnut Ct",
-      "email": "fanhall@gmail.com"
-    },
-    {
-      "id": 2,
-      "name": "Hannah Hall",
-      "address": "7002 Dhestnut Ct",
-      "email": "hanhall@gmail.com"
-    },
-    {
-      "id": 3,
-      "name": "Dannah Hall",
-      "address": "9002 Chestnut Ct",
-      "email": "danhall@gmail.com"
-    },
-    {
-      "id": 4,
-      "name": "Pannah Hall",
-      "address": "9002 Chestnut Ct",
-      "email": "panhall@gmail.com"
-    },
-    {
-      "id": 5,
-      "name": "Eannah Hall",
-      "address": "9002 Chestnut Ct",
-      "email": "eanhall@gmail.com"
-    },
-    {
-      "email": "openthedoor@gmail.com",
-      "name": "Erica Thompson",
-      "address": "1234 somewhere land",
-      "id": 6
-    },
-    {
-      "email": "younique9820@gmail.com",
-      "name": "Erica Thompson",
-      "address": "1245 over the moon st",
-      "id": 7
-    },
-    {
-      "id": 8,
-      "name": "Fannah Hall",
-      "address": "5002 Thestnut Ct",
-      "email": "fanhall@gmail.com"
-    }
-]
+
 def get_all_customers():
     return CUSTOMERS
 
@@ -177,3 +128,30 @@ def get_single_customer(id):
                             data['email'])
 
         return json.dumps(customer.__dict__)
+        
+def get_customers_by_email(email):
+
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        select
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        from Customer c
+        WHERE c.email = ?
+        """, ( email, ))
+
+        customers = []
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+            customer = Customer(row['id'], row['name'], row['address'], row['email'] , row['password'])
+            customers.append(customer.__dict__)
+
+    return json.dumps(customers)
