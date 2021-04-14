@@ -1,37 +1,7 @@
 import sqlite3
 import json
-from models import Employee
+from models import Employee, employee
 
-
-EMPLOYEES = [
-    {
-      "id": 1,
-      "name": "Jeremy Bakker",
-      "locationId": 2
-    },
-    {
-      "id": 2,
-      "name": "Eeremy Bakker",
-      "locationId": 1
-    },
-    {
-      "id": 3,
-      "name": "Feremy Bakker",
-      "locationId": 2
-    },
-    {
-      "id": 4,
-      "name": "Neremy Bakker",
-      "locationId": 1
-    },
-    {
-      "id": 5,
-      "name": "Fareremy Bakker",
-      "locationId": 1
-    }    
-]
-def get_all_employees():
-    return EMPLOYEES
 
 # Function with a single parameter
 def get_single_employee(id):
@@ -135,11 +105,12 @@ def get_single_employee(id):
         # into the SQL statement.
         db_cursor.execute("""
         SELECT
-            a.id,
-            a.name,
-            a.location_id
-        FROM employee a
-        WHERE a.id = ?
+            e.id,
+            e.name,
+            e.location_id
+        
+        FROM employee e
+        WHERE e.id = ?
         """, ( id, ))
 
         # Load the single result into memory
@@ -149,3 +120,28 @@ def get_single_employee(id):
         employee = Employee(data['id'], data['name'], data['location_id'])
 
         return json.dumps(employee.__dict__)
+
+def get_employees_by_location(location_id):
+
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        select
+            e.id,
+            e.name,
+            e.location_id
+        from Employee e
+        WHERE e.location_id = ?
+        """, ( location_id, ))
+
+        employees = []
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+            employee = Employee(row['id'], row['name'], row['location_id'])
+            employees.append(employee.__dict__)
+
+    return json.dumps(employees)
