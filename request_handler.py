@@ -1,4 +1,6 @@
+from employees.request import get_all_employees, get_single_employee
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from locations.request import get_all_locations, get_single_location
 from animals import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal, get_animals_by_status
 from locations import create_location, delete_location, update_location 
 from employees import create_employee, delete_employee, update_employee, get_employees_by_location
@@ -11,6 +13,7 @@ import json
 # work together for a common purpose. In this case, that
 # common purpose is to respond to HTTP requests from a client.
 class HandleRequests(BaseHTTPRequestHandler):
+    #self is the class. in this case it is HandleRequest
     def parse_url(self, path):
         path_params = path.split("/")
         resource = path_params[1]
@@ -61,7 +64,7 @@ class HandleRequests(BaseHTTPRequestHandler):
     # It handles any GET request.
     def do_GET(self):
         self._set_headers(200)
-
+# empty dictionary {}
         response = {}
 
         # Parse URL and store entire tuple in a variable
@@ -83,6 +86,16 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_customer(id)}"
                 else:
                     response = f"{get_all_customers()}"
+            elif resource == "locations":
+                if id is not None:
+                    response = f"{get_single_location(id)}"
+                else:
+                    response = f"{get_all_locations()}"
+            elif resource == "employee":
+                if id is not None:
+                    response = f"{get_single_employee(id)}"
+                else:
+                    response = f"{get_all_employees()}"
 
         # Response from parse_url() is a tuple with 3
         # items in it, which means the request was for
@@ -164,16 +177,17 @@ class HandleRequests(BaseHTTPRequestHandler):
 
 # This function is not inside the class. It is the starting
 # point of this application.
-
+    
     def do_PUT(self):
-        self._set_headers(204)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
         post_body = json.loads(post_body)
 
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
-        chosenResourceToUpdate = None
+
+        
+        chosenResourceToUpdate = False
         # Delete a single animal from the list
         if resource == "animals":
             chosenResourceToUpdate = update_animal(id, post_body)
@@ -184,6 +198,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         elif resource == "customers":
             chosenResourceToUpdate = update_customer(id, post_body)
 
+        if chosenResourceToUpdate:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
         # Encode the new animal and send in response
         self.wfile.write(f"{chosenResourceToUpdate}".encode())
 

@@ -4,45 +4,78 @@ from models import Animal
 
 # Function with a single parameter
 
-def create_animal(animal):
-    # Get the id value of the last animal in the list
-    max_id = ANIMALS[-1]["id"]
+def create_animal(new_animal):
+    with sqlite3.connect("./kennel.db") as conn:
+        db_cursor = conn.cursor()
 
-    # Add 1 to whatever that number is
-    new_id = max_id + 1
+        db_cursor.execute("""
+        INSERT INTO Animal
+            ( name, breed, status, location_id, customer_id )
+        VALUES
+            ( ?, ?, ?, ?, ?);
+        """, (new_animal['name'], new_animal['species'],
+              new_animal['status'], new_animal['location'],
+              new_animal['customerId'], ))
 
-    # Add an `id` property to the animal dictionary
-    animal["id"] = new_id
+        # The `lastrowid` property on the cursor will return
+        # the primary key of the last thing that got added to
+        # the database.
+        id = db_cursor.lastrowid
 
-    # Add the animal dictionary to the list
-    ANIMALS.append(animal)
+        # Add the `id` property to the animal dictionary that
+        # was sent by the client so that the client sees the
+        # primary key in the response.
+        new_animal['id'] = id
 
-    # Return the dictionary with `id` property added
-    return animal
+
+    return json.dumps(new_animal)
 
 def delete_animal(id):
-    # Initial -1 value for animal index, in case one isn't found
-    animal_index = -1
+    with sqlite3.connect("./kennel.db") as conn:
+        db_cursor = conn.cursor()
+# triple quotes is a string you can add new lines too
+#example >>> print("this is a string")
+    # this is a string
+    # >>> print("""this is a string
+    # ... his is a hot""")
+    # thsi is a string
+    # this is a hot
+        db_cursor.execute("""
+        DELETE FROM animal
+        WHERE id = ?
+        """, (id, ))
 
     # Iterate the ANIMALS list, but use enumerate() so that you
     # can access the index value of each item
-    for index, animal in enumerate(ANIMALS):
-        if animal["id"] == id:
-            # Found the animal. Store the current index.
-            animal_index = index
-
-    # If the animal was found, use pop(int) to remove it from list
-    if animal_index >= 0:
-        ANIMALS.pop(animal_index)
+    
 
 def update_animal(id, new_animal):
-    # Iterate the ANIMALS list, but use enumerate() so that
-    # you can access the index value of each item.
-    for index, animal in enumerate(ANIMALS):
-        if animal["id"] == id:
-            # Found the animal. Update the value.
-            ANIMALS[index] = new_animal
-            break
+    with sqlite3.connect("./kennel.db") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Animal
+            SET
+                name = ?,
+                breed = ?,
+                status = ?,
+                location_id = ?,
+                customer_id = ?
+        WHERE id = ?
+        """, (new_animal['name'], new_animal['breed'],
+              new_animal['status'], new_animal['location_id'],
+              new_animal['customer_id'], id, ))
+
+        # Were any rows affected?
+        # Did the client send an `id` that exists?
+        rows_affected = db_cursor.rowcount
+
+    if rows_affected == 0:
+        # Forces 404 response by main module
+        return False
+    else:
+        # Forces 204 response by main module
+        return True
 
 def get_all_animals():
     # Open a connection to the database
@@ -50,9 +83,11 @@ def get_all_animals():
 
         # Just use these. It's a Black Box.
         conn.row_factory = sqlite3.Row
+        #variable the database con.cursor() lets us talk to the database
         db_cursor = conn.cursor()
 
         # Write the SQL query to get the information you want
+        #dbcursor tells it what sql command to execute in this case its SELECT
         db_cursor.execute("""
         SELECT
             a.id,
@@ -68,6 +103,7 @@ def get_all_animals():
         animals = []
 
         # Convert rows of data into a Python list
+        ## dataset pretty much fetche al lthat was executed at line 65
         dataset = db_cursor.fetchall()
 
         # Iterate list of data returned from database
@@ -77,6 +113,7 @@ def get_all_animals():
             # Note that the database fields are specified in
             # exact order of the parameters defined in the
             # Animal class above.
+            ## This makes a new animal instance and we're calling it the properties on the class in the modal folder animal.py
             animal = Animal(row['id'], row['name'], row['breed'],
                             row['status'], row['location_id'],
                             row['customer_id'])
@@ -84,6 +121,7 @@ def get_all_animals():
             animals.append(animal.__dict__)
 
     # Use `json` package to properly serialize list as JSON
+    # changes from a dict to a jsonString
     return json.dumps(animals)
 
 def get_single_animal(id):
