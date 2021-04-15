@@ -90,3 +90,12 @@ WHERE a.id = 3
 --     a.address
 -- FROM location a
 -- WHERE a.id = 3
+
+SELECT *
+FROM Location
+
+SELECT *
+FROM Employee
+
+SELECT * 
+FROM Animal ORDER BY id DESC;
