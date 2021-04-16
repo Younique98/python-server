@@ -91,7 +91,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_location(id)}"
                 else:
                     response = f"{get_all_locations()}"
-            elif resource == "employee":
+            elif resource == "employees":
                 if id is not None:
                     response = f"{get_single_employee(id)}"
                 else:
