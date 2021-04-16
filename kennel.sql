@@ -95,6 +95,10 @@ SELECT *
 FROM Location
 
 SELECT *
+FROM Customer
+
+
+SELECT *
 FROM Employee
 
 SELECT * 
@@ -112,3 +116,15 @@ SELECT
 FROM Animal a
 JOIN Location l
     ON l.id = a.location_id
+
+	SELECT
+    a.id,
+    a.name,
+    a.address,
+    a.email,
+    a.password
+    c.name customer_name,
+    c.address customer_address
+FROM Animal a
+JOIN Customer c
+    ON a.id = a.customer_id
