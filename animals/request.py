@@ -4,6 +4,7 @@ from models import Animal
 from models import Customer
 from models import Location
 
+
 # Function with a single parameter
 
 def create_animal(new_animal):
@@ -104,7 +105,8 @@ def get_all_animals():
             c.name,
             c.address,
             c.email,
-            c.password        FROM Animal a
+            c.password        
+        FROM Animal a
         JOIN Location l
             ON l.id = a.location_id
         JOIN Customer c
@@ -133,11 +135,15 @@ def get_all_animals():
 
     # Create a Customer instance from the current row
             customer = Customer(row['id'], row['name'], row['address'], row['email'], row['password'])
+    
 
     # Add the dictionary representation of the location to the animal
             animal.location = location.__dict__
     # Add the dictionary representation of the customer to the animal
             animal.customer = customer.__dict__
+   
+    # Add the dictionary representation of the employee to the animal
+            animal.employee = employee.__dict__
 
     # Add the dictionary representation of the animal to the list
             animals.append(animal.__dict__)
