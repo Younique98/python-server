@@ -16,7 +16,7 @@ def create_animal(new_animal):
             ( name, breed, status, location_id, customer_id )
         VALUES
             ( ?, ?, ?, ?, ?);
-        """, (new_animal['name'], new_animal['species'],
+        """, (new_animal['name'], new_animal['breed'],
               new_animal['status'], new_animal['location'],
               new_animal['customerId'], ))
 
@@ -142,8 +142,7 @@ def get_all_animals():
     # Add the dictionary representation of the customer to the animal
             animal.customer = customer.__dict__
    
-    # Add the dictionary representation of the employee to the animal
-            animal.employee = employee.__dict__
+
 
     # Add the dictionary representation of the animal to the list
             animals.append(animal.__dict__)
