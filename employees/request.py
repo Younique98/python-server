@@ -81,7 +81,7 @@ def update_employee(id, new_employee):
 
 #"id": 2,
 #     "name": "Eeremy Bakker",
-#     "locationId": 1
+#     "location_id": 1
 
 def get_all_employees():
     # Open a connection to the database

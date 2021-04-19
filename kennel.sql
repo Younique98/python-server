@@ -80,7 +80,7 @@ WHERE a.id = 3
 -- SELECT
 --     a.id,
 --     a.name,
---     a.locationId
+--     a.location_id
 -- FROM employee a
 -- WHERE a.id = 3
 
