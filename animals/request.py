@@ -17,7 +17,7 @@ def create_animal(new_animal):
         VALUES
             ( ?, ?, ?, ?, ?);
         """, (new_animal['name'], new_animal['breed'],
-              new_animal['status'], new_animal['location'],
+              new_animal['status'], new_animal['locationId'],
               new_animal['customerId'], ))
 
         # The `lastrowid` property on the cursor will return
